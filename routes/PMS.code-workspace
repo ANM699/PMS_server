@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "pms",
+			"path": "..\\..\\pms"
+		},
+		{
+			"name": "pms_server",
+			"path": ".."
+		}
+	],
+	"settings": {}
+}
