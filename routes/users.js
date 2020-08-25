@@ -9,7 +9,7 @@ const filter = {
 }; //查询时过滤指定的属性
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 
@@ -33,7 +33,7 @@ router.post('/register', function (req, res) {
           password: md5(password),
           email,
         }).save((err, user) => {
-          res.cookie('userid', user._id, {
+          res.cookie('userId', user._id, {
             maxAge: 1000 * 60 * 60 * 24,
           });
           res.send({
@@ -56,8 +56,9 @@ router.post('/login', function (req, res, next) {
     },
     filter,
     (err, user) => {
+      const userId = user._id;
       if (user) {
-        res.cookie('userid', user._id, {
+        res.cookie('userId', userId, {
           maxAge: 1000 * 60 * 60 * 24,
         });
         // const data = { username, type: user.type, _id: user._id };
@@ -73,6 +74,21 @@ router.post('/login', function (req, res, next) {
       }
     }
   );
+});
+
+//获取用户信息
+router.get('/user', function (req, res) {
+  const userId = req.cookies.userId;
+  if (!userId) {
+    return res.send({ code: 1, msg: '请先登录' });
+  }
+  UserModel.findOne({ _id: userId }, filter, (err, user) => {
+    if (!user) {
+      res.send({ code: 1, msg: '用户不存在' });
+    } else {
+      res.send({ code: 0, data: user });
+    }
+  });
 });
 
 module.exports = router;
