@@ -25,7 +25,7 @@ router.post("/register", function (req, res) {
       if (user) {
         res.send({
           code: 1,
-          msg: "该用户名已经被注册",
+          msg: "用户名已经被注册",
         });
       } else {
         new UserModel({
@@ -57,8 +57,7 @@ router.post("/login", function (req, res, next) {
     filter,
     (err, user) => {
       if (user) {
-        const userId = user._id;
-        res.cookie("userId", userId, {
+        res.cookie("userId", user._id, {
           maxAge: 1000 * 60 * 60 * 24,
         });
         // const data = { username, type: user.type, _id: user._id };
