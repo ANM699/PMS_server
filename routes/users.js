@@ -1,20 +1,20 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 
-const md5 = require('blueimp-md5');
-const { UserModel } = require('../db/models');
+const md5 = require("blueimp-md5");
+const { UserModel } = require("../db/models");
 const filter = {
   password: 0,
   __v: 0,
 }; //查询时过滤指定的属性
 
 /* GET users listing. */
-router.get('/', function (req, res, next) {
-  res.send('respond with a resource');
+router.get("/", function (req, res, next) {
+  res.send("respond with a resource");
 });
 
 //用户注册
-router.post('/register', function (req, res) {
+router.post("/register", function (req, res) {
   const { username, password, email } = req.body;
   UserModel.findOne(
     {
@@ -25,7 +25,7 @@ router.post('/register', function (req, res) {
       if (user) {
         res.send({
           code: 1,
-          msg: '该邮箱已经被注册',
+          msg: "该邮箱已经被注册",
         });
       } else {
         new UserModel({
@@ -33,7 +33,7 @@ router.post('/register', function (req, res) {
           password: md5(password),
           email,
         }).save((err, user) => {
-          res.cookie('userId', user._id, {
+          res.cookie("userId", user._id, {
             maxAge: 1000 * 60 * 60 * 24,
           });
           res.send({
@@ -47,7 +47,7 @@ router.post('/register', function (req, res) {
 });
 
 //用户登录
-router.post('/login', function (req, res, next) {
+router.post("/login", function (req, res, next) {
   const { email, password } = req.body;
   UserModel.findOne(
     {
@@ -56,9 +56,9 @@ router.post('/login', function (req, res, next) {
     },
     filter,
     (err, user) => {
-      const userId = user._id;
       if (user) {
-        res.cookie('userId', userId, {
+        const userId = user._id;
+        res.cookie("userId", userId, {
           maxAge: 1000 * 60 * 60 * 24,
         });
         // const data = { username, type: user.type, _id: user._id };
@@ -69,7 +69,7 @@ router.post('/login', function (req, res, next) {
       } else {
         res.send({
           code: 1,
-          msg: '邮箱或密码错误',
+          msg: "邮箱或密码错误",
         });
       }
     }
@@ -77,14 +77,14 @@ router.post('/login', function (req, res, next) {
 });
 
 //获取用户信息
-router.get('/user', function (req, res) {
+router.get("/user", function (req, res) {
   const userId = req.cookies.userId;
   if (!userId) {
-    return res.send({ code: 1, msg: '请先登录' });
+    return res.send({ code: 1, msg: "请先登录" });
   }
   UserModel.findOne({ _id: userId }, filter, (err, user) => {
     if (!user) {
-      res.send({ code: 1, msg: '用户不存在' });
+      res.send({ code: 1, msg: "用户不存在" });
     } else {
       res.send({ code: 0, data: user });
     }
