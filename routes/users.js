@@ -15,23 +15,23 @@ router.get("/", function (req, res, next) {
 
 //用户注册
 router.post("/register", function (req, res) {
-  const { username, password, email } = req.body;
+  const { username, password } = req.body;
   UserModel.findOne(
     {
-      email,
+      username,
     },
     filter,
     (err, user) => {
       if (user) {
         res.send({
           code: 1,
-          msg: "该邮箱已经被注册",
+          msg: "该用户名已经被注册",
         });
       } else {
         new UserModel({
           username,
           password: md5(password),
-          email,
+          // email,
         }).save((err, user) => {
           res.cookie("userId", user._id, {
             maxAge: 1000 * 60 * 60 * 24,
@@ -48,10 +48,10 @@ router.post("/register", function (req, res) {
 
 //用户登录
 router.post("/login", function (req, res, next) {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   UserModel.findOne(
     {
-      email,
+      username,
       password: md5(password),
     },
     filter,
@@ -69,7 +69,7 @@ router.post("/login", function (req, res, next) {
       } else {
         res.send({
           code: 1,
-          msg: "邮箱或密码错误",
+          msg: "用户名或密码错误",
         });
       }
     }
