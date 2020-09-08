@@ -1,16 +1,16 @@
 //1.连接数据库
 //引入mongoose
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 //连接指定数据库
-mongoose.connect("mongodb://localhost:27017/pms", {
+mongoose.connect('mongodb://localhost:27017/pms', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 //获取连接对象
 const conn = mongoose.connection;
 //绑定连接完成的监听
-conn.on("connected", function () {
-  console.log("数据库连接成功");
+conn.on('connected', function () {
+  console.log('数据库连接成功');
 });
 
 //2.得到对应特定集合的Model并向外暴露
@@ -24,7 +24,7 @@ const userSchema = mongoose.Schema({
   memo: { type: String },
 });
 //定义Model
-const UserModel = mongoose.model("user", userSchema);
+const UserModel = mongoose.model('user', userSchema);
 //向外暴露Model
 exports.UserModel = UserModel;
 
@@ -35,5 +35,26 @@ const projectSchema = mongoose.Schema({
   endDate: { type: Date, require: true },
   description: { type: String, require: true },
 });
-const ProjectModel = mongoose.model("project", projectSchema);
+const ProjectModel = mongoose.model('project', projectSchema);
 exports.ProjectModel = ProjectModel;
+
+//用户故事
+const storySchema = mongoose.Schema({
+  description: { type: String, require: true },
+  projectId: { type: String, require: true },
+  role: { type: String },
+  activity: { type: String },
+  businessValue: { type: String },
+});
+const StoryModel = mongoose.model('story', storySchema);
+exports.StoryModel = StoryModel;
+
+//任务
+const taskSchema = mongoose.Schema({
+  taskName: { type: String, require: true },
+  status: { type: String, require: true },
+  storyId: { type: String, require: true },
+  projectId: { type: String, require: true },
+});
+const TaskModel = mongoose.model('task', taskSchema);
+exports.TaskModel = TaskModel;
